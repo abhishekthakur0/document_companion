@@ -1,4 +1,5 @@
 // A screen that allows users to take a picture using a given camera.
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -139,7 +140,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 await _controller.takePicture(path);
 
                 // If the picture was taken, display it on a new screen.
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DisplayPictureScreen(imagePath: path),
@@ -178,12 +179,40 @@ class DisplayPictureScreen extends StatelessWidget {
           Image.file(File(imagePath)),
           Spacer(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RaisedButton(
-                child: Text("Hello"),
+                color: Colors.red,
+                textColor: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.clear),
+                    Text("Discard"),
+                  ],
+                ),
+                onPressed: () {
+                  print("Discard clicked");
+                  Future deleted = Directory(imagePath).delete(recursive: true);
+                  deleted.then((value) {
+                    print(value);
+                    Navigator.pushReplacementNamed(context, '/');
+                  });
+                },
               ),
-              Spacer(),
-              RaisedButton()
+              RaisedButton(
+                color: Colors.green,
+                textColor: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.check),
+                    Text("Accept"),
+                  ],
+                ),
+                onPressed: () {
+                  print("Accept Clicked");
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+              )
             ],
           ),
           SizedBox(

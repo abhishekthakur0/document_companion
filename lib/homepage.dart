@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:images_to_pdf/images_to_pdf.dart';
+import 'package:path/path.dart' as path;
+import 'package:flutter/services.dart';
+import 'package:path_provider_ex/path_provider_ex.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simplescanner/takepicturescreen.dart';
-
-final Directory _photoDir =
-    new Directory('/storage/emulated/0/MyCreatedFolder');
+import 'package:printing/printing.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -14,7 +16,109 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  static List<StorageInfo> _storageInfo = [];
   var firstCamera;
+  Directory _photoDir;
+  //Pdf Generating Variables
+  File _pdfFile;
+  String _status = "Not created";
+  FileStat _pdfStat;
+  bool _generating = false;
+  List images;
+
+  @override
+  void initState() {
+    initPlatformState();
+    _photoDir = Directory(_storageInfo[0].rootDir + '/MyCreatedFolder');
+    chooseCamera();
+    _permissionCheck = (() async {
+      bool hasPermission = await isPermissionGranted(Permission.storage);
+      if (!hasPermission) {
+        hasPermission = await requestPermission(Permission.storage);
+      }
+      return hasPermission;
+    })();
+    super.initState();
+  }
+
+  Future<File> _assetFromBundle(String name) async {
+    //final tempDir = await getApplicationDocumentsDirectory();
+    final output = File(path.join(_photoDir.path, name));
+
+    if (!await output.exists()) {
+      final data = await rootBundle.load('$name');
+      final buffer = data.buffer;
+      output.writeAsBytes(
+          buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    }
+
+    return output;
+  }
+
+  Future<void> _createPdf() async {
+    try {
+      this.setState(() => _generating = true);
+      //final tempDir = await getApplicationDocumentsDirectory();
+      final output = File(path.join(_photoDir.path, 'example.pdf'));
+
+      this.setState(() => _status = 'Preparing images...');
+//      final images = [
+//        await _assetFromBundle('01.png'),
+//        await _assetFromBundle('02.jpg'),
+//        await _assetFromBundle('03.jpg'),
+//        await _assetFromBundle('04.jpg'),
+//        await _assetFromBundle('05.jpg'),
+//        await _assetFromBundle('06.jpg'),
+//        await _assetFromBundle('07.jpg'),
+//        await _assetFromBundle('08.jpg'),
+//        await _assetFromBundle('09.jpg'),
+//        await _assetFromBundle('10.jpg'),
+//        await _assetFromBundle('11.jpg'),
+//        await _assetFromBundle('12.jpg'),
+//        await _assetFromBundle('13.jpg'),
+//      ];
+      List images = _photoDir
+          .listSync()
+          .map((item) => item.path)
+          .where((item) => item.endsWith(".png"))
+          .toList(growable: true);
+
+      this.setState(() => _status = 'Generating PDF');
+      await ImagesToPdf.createPdf(
+        pages: images
+            .map(
+              (file) => PdfPage(
+                imageFile: file,
+                size: Size(1920, 1080),
+                compressionQuality: 0.5,
+              ),
+            )
+            .toList(),
+        output: output,
+      );
+      _pdfStat = await output.stat();
+      this.setState(() {
+        _pdfFile = output;
+        _status = 'PDF Generated (${_pdfStat.size ~/ 1024}kb)';
+      });
+    } catch (e) {
+      this.setState(() => _status = 'Failed to generate pdf: $e".');
+    } finally {
+      this.setState(() => _generating = false);
+    }
+  }
+
+  Future<void> _openPdf() async {
+    if (_pdfFile != null) {
+      try {
+        final bytes = await _pdfFile.readAsBytes();
+        await Printing.sharePdf(
+            bytes: bytes, filename: path.basename(_pdfFile.path));
+      } catch (e) {
+        _status = 'Failed to open pdf: $e".';
+      }
+    }
+  }
 
   Future<void> chooseCamera() async {
     // Obtain a list of the available cameras on the device.
@@ -34,76 +138,116 @@ class _HomepageState extends State<Homepage> {
     return true;
   }
 
-  @override
-  void initState() {
-    chooseCamera();
-    super.initState();
-    _permissionCheck = (() async {
-      bool hasPermission = await isPermissionGranted(Permission.storage);
-      if (!hasPermission) {
-        hasPermission = await requestPermission(Permission.storage);
-      }
-      return hasPermission;
-    })();
+  Future<void> initPlatformState() async {
+    List<StorageInfo> storageInfo;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      storageInfo = await PathProviderEx.getStorageInfo();
+    } on PlatformException {}
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _storageInfo = storageInfo;
+    });
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to exit an App'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () => exit(0),
+                /*Navigator.of(context).pop(true)*/
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Simple Scanner'),
-          centerTitle: true,
-          backgroundColor: Colors.black,
-        ),
-        body: Center(
-          child: FutureBuilder(
-            future: _permissionCheck,
-            builder: (context, status) {
-              if (status.connectionState == ConnectionState.done) {
-                if (status.data) {
-                  print("Permission was granted");
-                  return ImageGrid(directory: _photoDir);
+      home: WillPopScope(
+        onWillPop: () => _onWillPop(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Simple Scanner'),
+            centerTitle: true,
+            backgroundColor: Colors.black,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.print,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _createPdf();
+                },
+              )
+            ],
+          ),
+          body: Center(
+            child: FutureBuilder(
+              future: _permissionCheck,
+              builder: (context, status) {
+                if (status.connectionState == ConnectionState.done) {
+                  if (status.data) {
+                    //print("Permission was granted");
+                    return ImageGrid(directory: _photoDir);
+                  } else {
+                    return Center(
+                      child: Column(
+                        children: [
+                          Text(
+                              "Read permission was denied, so can't read pictures. Try again by pressing below."),
+                          FlatButton(
+                            child: Text("Request Permission"),
+                            onPressed: () {
+                              setState(() {
+                                _permissionCheck =
+                                    requestPermission(Permission.storage);
+                              });
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  }
                 } else {
                   return Center(
-                    child: Column(
-                      children: [
-                        Text(
-                            "Read permission was denied, so can't read pictures. Try again by pressing below."),
-                        FlatButton(
-                          child: Text("Request Permission"),
-                          onPressed: () {
-                            setState(() {
-                              _permissionCheck =
-                                  requestPermission(Permission.storage);
-                            });
-                          },
-                        )
-                      ],
-                    ),
+                    child: CircularProgressIndicator(),
                   );
                 }
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+              },
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.black,
+            child: Icon(Icons.camera_alt),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TakePictureScreen(
+                    camera: firstCamera,
+                  ),
+                ),
+              );
             },
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.black,
-          child: Icon(Icons.camera_alt),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TakePictureScreen(
-                  camera: firstCamera,
-                ),
-              ),
-            );
-          },
         ),
       ),
     );
@@ -117,19 +261,20 @@ class ImageGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Stopwatch watch = new Stopwatch()..start();
+    //Stopwatch watch = new Stopwatch()..start();
     var imageList = directory
         .listSync()
         .map((item) => item.path)
         .where((item) => item.endsWith(".png"))
         .toList(growable: true);
-    print("Time to load: ${watch.elapsed}, Image list: $imageList");
+    //print(imageList);
+    //print("Time to load: ${watch.elapsed}, Image list: $imageList");
     return GridView.builder(
       itemCount: imageList.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, childAspectRatio: 4.0 / 3.0),
       itemBuilder: (context, index) {
-        print("Loading image with index $index");
+        //print("Loading image with index $index");
         return Card(
           color: Colors.transparent,
           elevation: 2,
