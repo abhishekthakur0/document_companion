@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,12 +25,12 @@ class _HomepageState extends State<Homepage> {
   String _status = "Not created";
   FileStat _pdfStat;
   bool _generating = false;
-  List images;
+
+  _HomepageState();
 
   @override
   void initState() {
     initPlatformState();
-    _photoDir = Directory(_storageInfo[0].rootDir + '/MyCreatedFolder');
     chooseCamera();
     _permissionCheck = (() async {
       bool hasPermission = await isPermissionGranted(Permission.storage);
@@ -42,7 +43,6 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<File> _assetFromBundle(String name) async {
-    //final tempDir = await getApplicationDocumentsDirectory();
     final output = File(path.join(_photoDir.path, name));
 
     if (!await output.exists()) {
@@ -51,7 +51,6 @@ class _HomepageState extends State<Homepage> {
       output.writeAsBytes(
           buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
     }
-
     return output;
   }
 
@@ -59,37 +58,27 @@ class _HomepageState extends State<Homepage> {
     try {
       this.setState(() => _generating = true);
       //final tempDir = await getApplicationDocumentsDirectory();
-      final output = File(path.join(_photoDir.path, 'example.pdf'));
-
+      final output = File(path.join(_photoDir.path, 'YourPdf.pdf'));
+      //print(output);
       this.setState(() => _status = 'Preparing images...');
-//      final images = [
-//        await _assetFromBundle('01.png'),
-//        await _assetFromBundle('02.jpg'),
-//        await _assetFromBundle('03.jpg'),
-//        await _assetFromBundle('04.jpg'),
-//        await _assetFromBundle('05.jpg'),
-//        await _assetFromBundle('06.jpg'),
-//        await _assetFromBundle('07.jpg'),
-//        await _assetFromBundle('08.jpg'),
-//        await _assetFromBundle('09.jpg'),
-//        await _assetFromBundle('10.jpg'),
-//        await _assetFromBundle('11.jpg'),
-//        await _assetFromBundle('12.jpg'),
-//        await _assetFromBundle('13.jpg'),
-//      ];
-      List images = _photoDir
+      List imagesList = _photoDir
           .listSync()
           .map((item) => item.path)
           .where((item) => item.endsWith(".png"))
           .toList(growable: true);
-
+      List images = [];
+      for (int i = 0; i < imagesList.length; i++) {
+        int maxleng = imagesList[i].length;
+        images.add(await _assetFromBundle(
+            imagesList[i].toString().substring(36, maxleng)));
+      }
       this.setState(() => _status = 'Generating PDF');
       await ImagesToPdf.createPdf(
         pages: images
             .map(
               (file) => PdfPage(
                 imageFile: file,
-                size: Size(1920, 1080),
+                size: Size(1240, 1754),
                 compressionQuality: 0.5,
               ),
             )
@@ -106,6 +95,7 @@ class _HomepageState extends State<Homepage> {
     } finally {
       this.setState(() => _generating = false);
     }
+    print(_status);
   }
 
   Future<void> _openPdf() async {
@@ -152,6 +142,7 @@ class _HomepageState extends State<Homepage> {
 
     setState(() {
       _storageInfo = storageInfo;
+      _photoDir = Directory(_storageInfo[0].rootDir + '/MyCreatedFolder');
     });
   }
 
@@ -195,6 +186,9 @@ class _HomepageState extends State<Homepage> {
                 ),
                 onPressed: () {
                   _createPdf();
+                  Future.delayed(Duration(seconds: 1)).then((value) {
+                    _showMyDialog();
+                  });
                 },
               )
             ],
@@ -250,6 +244,36 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Container(
+          height: 50,
+          width: 100,
+          child: AlertDialog(
+            title: Text(_status),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Open Pdf'),
+                onPressed: () {
+                  _openPdf();
+                },
+              ),
+              FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

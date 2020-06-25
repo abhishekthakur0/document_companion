@@ -133,7 +133,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   // Store the picture in the temp directory.
                   // Find the temp directory using the `path_provider` plugin.
                   (await _localPath),
-                  '${DateTime.now()}.png',
+                  '${(new DateTime.now()).millisecondsSinceEpoch}.png',
                 );
                 print(path);
                 // Attempt to take a picture and log where it's been saved.
