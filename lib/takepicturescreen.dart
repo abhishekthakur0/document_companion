@@ -1,7 +1,6 @@
 // A screen that allows users to take a picture using a given camera.
 import 'dart:async';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider_ex/path_provider_ex.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_lantern/flutter_lantern.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -26,6 +26,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
   List<StorageInfo> _storageInfo = [];
+  bool _isOn = false;
 
   @override
   void initState() {
@@ -82,10 +83,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
     if (storage) {
       final directory =
-          await Directory(_storageInfo[0].rootDir + '/MyCreatedFolder')
-              .create();
+          await Directory(_storageInfo[0].rootDir + '/MySimpleScanner');
 
       return directory.path;
+    } else {
+      print("Permission not granted");
     }
   }
 
@@ -96,6 +98,18 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         title: Text('Take a picture'),
         centerTitle: true,
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(_isOn ? Icons.flash_off : Icons.flash_on),
+            onPressed: () {},
+          ),
+        ],
       ),
       // Wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner
@@ -168,10 +182,21 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Display the Picture'),
-        centerTitle: true,
-        backgroundColor: Colors.black,
-      ),
+          title: Text('Clicked Picture'),
+          centerTitle: true,
+          backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              print("Discard clicked");
+              print(imagePath);
+              Future deleted = Directory(imagePath).delete(recursive: true);
+              deleted.then((value) {
+                //print(value);
+                Navigator.pushReplacementNamed(context, '/');
+              });
+            },
+          )),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: Column(

@@ -23,8 +23,11 @@ class _HomepageState extends State<Homepage> {
   //Pdf Generating Variables
   File _pdfFile;
   String _status = "Not created";
+  String _errorStatus = "Not created";
+  String _action = ' ';
   FileStat _pdfStat;
   bool _generating = false;
+  Future<bool> _permissionCheck;
 
   _HomepageState();
 
@@ -58,7 +61,8 @@ class _HomepageState extends State<Homepage> {
     try {
       this.setState(() => _generating = true);
       //final tempDir = await getApplicationDocumentsDirectory();
-      final output = File(path.join(_photoDir.path, 'YourPdf.pdf'));
+      final output = File(path.join(_photoDir.path,
+          '${(new DateTime.now()).millisecondsSinceEpoch}.pdf'));
       //print(output);
       this.setState(() => _status = 'Preparing images...');
       List imagesList = _photoDir
@@ -69,33 +73,45 @@ class _HomepageState extends State<Homepage> {
       List images = [];
       for (int i = 0; i < imagesList.length; i++) {
         int maxleng = imagesList[i].length;
+        //print(imagesList[i].toString().substring(36, maxleng));
         images.add(await _assetFromBundle(
             imagesList[i].toString().substring(36, maxleng)));
       }
-      this.setState(() => _status = 'Generating PDF');
-      await ImagesToPdf.createPdf(
-        pages: images
-            .map(
-              (file) => PdfPage(
-                imageFile: file,
-                size: Size(1240, 1754),
-                compressionQuality: 0.5,
-              ),
-            )
-            .toList(),
-        output: output,
-      );
-      _pdfStat = await output.stat();
-      this.setState(() {
-        _pdfFile = output;
-        _status = 'PDF Generated (${_pdfStat.size ~/ 1024}kb)';
-      });
+      if (images.isNotEmpty) {
+        this.setState(() => _status = 'Generating PDF');
+        await ImagesToPdf.createPdf(
+          pages: images
+              .map(
+                (file) => PdfPage(
+                  imageFile: file,
+                  size: Size(1240, 1754),
+                  compressionQuality: 0.5,
+                ),
+              )
+              .toList(),
+          output: output,
+        );
+        _pdfStat = await output.stat();
+        this.setState(() {
+          _pdfFile = output;
+          _status = 'PDF Generated (${_pdfStat.size ~/ 1024}kb)';
+          _action = 'Open PDF';
+          _errorStatus =
+              'PDF Generated Successfully\nSize - ${_pdfStat.size ~/ 1024}KB ';
+        });
+      }
     } catch (e) {
-      this.setState(() => _status = 'Failed to generate pdf: $e".');
+      this.setState(() {
+        _status = 'Failed to generate pdf: $e".';
+        _action = '';
+        _errorStatus =
+            'PDF Generation Unsuccessful\nPlease Report on Google Play';
+      });
     } finally {
       this.setState(() => _generating = false);
     }
-    print(_status);
+    _showMyDialog();
+    //print(_status);
   }
 
   Future<void> _openPdf() async {
@@ -116,8 +132,6 @@ class _HomepageState extends State<Homepage> {
     // Get a specific camera from the list of available cameras.
     firstCamera = cameras.first;
   }
-
-  Future<bool> _permissionCheck;
 
   Future<bool> isPermissionGranted(Permission permission) async {
     return await permission.isGranted;
@@ -142,8 +156,12 @@ class _HomepageState extends State<Homepage> {
 
     setState(() {
       _storageInfo = storageInfo;
-      _photoDir = Directory(_storageInfo[0].rootDir + '/MyCreatedFolder');
+      Directory(_storageInfo[0].rootDir + '/MySimpleScanner')
+          .create()
+          .whenComplete(() => _photoDir =
+              Directory(_storageInfo[0].rootDir + '/MySimpleScanner'));
     });
+    //print(_photoDir);
   }
 
   Future<bool> _onWillPop() {
@@ -181,14 +199,34 @@ class _HomepageState extends State<Homepage> {
             actions: <Widget>[
               IconButton(
                 icon: Icon(
+                  Icons.delete_forever,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  var imageList = _photoDir
+                      .listSync()
+                      .map((item) => item.path)
+                      .where((item) => item.endsWith(".png"))
+                      .toList(growable: true);
+                  for (int i = 0; i < imageList.length; i++) {
+                    Future deleted =
+                        Directory(imageList[i]).delete(recursive: true);
+                    deleted.then((value) {
+                      setState(() {
+                        // ignore: unnecessary_statements
+                        _photoDir;
+                      });
+                    });
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(
                   Icons.print,
                   color: Colors.white,
                 ),
                 onPressed: () {
                   _createPdf();
-                  Future.delayed(Duration(seconds: 1)).then((value) {
-                    _showMyDialog();
-                  });
                 },
               )
             ],
@@ -256,10 +294,10 @@ class _HomepageState extends State<Homepage> {
           height: 50,
           width: 100,
           child: AlertDialog(
-            title: Text(_status),
+            title: Text('$_errorStatus'),
             actions: <Widget>[
               FlatButton(
-                child: Text('Open Pdf'),
+                child: Text('$_action'),
                 onPressed: () {
                   _openPdf();
                 },

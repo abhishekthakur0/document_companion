@@ -30,6 +30,7 @@ dependencies:
   path:
   images_to_pdf: ^0.0.1
   printing: ^3.5.0
+  flutter_lantern: ^0.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
