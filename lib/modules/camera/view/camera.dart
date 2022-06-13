@@ -1,14 +1,13 @@
 // A screen that allows users to take a picture using a given camera.
 import 'dart:async';
 import 'dart:io';
+
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider_ex/path_provider_ex.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_lantern/flutter_lantern.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -151,7 +150,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 );
                 print(path);
                 // Attempt to take a picture and log where it's been saved.
-                await _controller.takePicture(path);
+                await _controller.takePicture();
 
                 // If the picture was taken, display it on a new screen.
                 Navigator.pushReplacement(

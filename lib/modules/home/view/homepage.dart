@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:images_to_pdf/images_to_pdf.dart';
 import 'package:path/path.dart' as path;
-import 'package:flutter/services.dart';
 import 'package:path_provider_ex/path_provider_ex.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:simplescanner/takepicturescreen.dart';
 import 'package:printing/printing.dart';
 
+import '../../camera/view/camera.dart';
+
 class Homepage extends StatefulWidget {
+  static const String route = '/homepage';
   @override
   _HomepageState createState() => _HomepageState();
 }
