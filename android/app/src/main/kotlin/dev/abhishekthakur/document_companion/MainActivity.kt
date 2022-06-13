@@ -1,4 +1,4 @@
-package `in`.devity.simple_scanner
+package dev.abhishekthakur.document_companion
 
 import io.flutter.embedding.android.FlutterActivity
 

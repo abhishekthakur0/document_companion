@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:document_companion/config/route_generator.dart';
+import 'package:document_companion/modules/home/view/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:simplescanner/config/route_generator.dart';
-import 'package:simplescanner/modules/home/view/homepage.dart';
 
 import 'config/custom_key.dart';
 import 'config/custom_theme.dart';

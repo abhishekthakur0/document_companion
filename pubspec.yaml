@@ -1,4 +1,4 @@
-name: simplescanner
+name: document_companion
 description: convert image to pdf in few clicks.
 
 # The following line prevents the package from being accidentally published to
@@ -26,13 +26,11 @@ dependencies:
   flutter_localizations: # Add this line
     sdk: flutter
   camera:
-  path_provider:
-  path_provider_ex:
+  path_provider: ^2.0.11
   permission_handler: ^9.2.0
   path:
   images_to_pdf: ^0.0.1
   printing: ^5.9.1
-  flutter_lantern: ^0.0.1
   intl: ^0.17.0
 
 

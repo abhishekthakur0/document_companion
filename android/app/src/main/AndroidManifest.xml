@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.devity.simple_scanner">
+    package="dev.abhishekthakur.document_companion">
    <application
-        android:label="simple_scanner"
+        android:label="Document Companion"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

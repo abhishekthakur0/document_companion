@@ -1,5 +1,5 @@
+import 'package:document_companion/modules/home/view/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:simplescanner/modules/home/view/homepage.dart';
 
 class RouteGenerator {
   static Route<MaterialPageRoute> generateRoute(RouteSettings settings) {
