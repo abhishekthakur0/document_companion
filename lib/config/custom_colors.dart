@@ -12,4 +12,5 @@ class CustomColors {
   static const Color portGore = Color(0xFF202542);
   static const Color portGoreApprox = Color(0xFF262A4C);
   static const Color alto = Color(0xFFD1D1D1);
+  static const Color leatherJacket = Color(0xFF202624);
 }

@@ -15,12 +15,14 @@ class CustomTheme with ChangeNotifier {
   static ThemeData get lightTheme {
     return ThemeData(
       primaryColor: CustomColors.white,
-      backgroundColor: CustomColors.portGoreApprox,
-      scaffoldBackgroundColor: CustomColors.portGoreApprox,
-      appBarTheme: const AppBarTheme(
+      backgroundColor: CustomColors.leatherJacket,
+      scaffoldBackgroundColor: CustomColors.leatherJacket,
+      appBarTheme: AppBarTheme(
         elevation: 0,
-        backgroundColor: CustomColors.portGoreApprox,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        backgroundColor: CustomColors.leatherJacket,
+        systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: CustomColors.leatherJacket,
+        ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
         fillColor: CustomColors.portGore,
