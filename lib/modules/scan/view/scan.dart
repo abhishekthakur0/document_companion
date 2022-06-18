@@ -1,5 +1,11 @@
-import 'package:document_companion/config/custom_colors.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+
+import '../../scanner/document_scanner_controller.dart';
+import '../../scanner/ui/pages/document_scanner.dart';
+import '../../scanner/utils/crop_photo_document_style.dart';
+import '../../scanner/utils/general_styles.dart';
 
 class Scan extends StatefulWidget {
   static const String route = '/scan';
@@ -10,46 +16,23 @@ class Scan extends StatefulWidget {
 }
 
 class _ScanState extends State<Scan> {
+  final _controller = DocumentScannerController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: SizedBox(),
-          ),
-          Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: CustomColors.white,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(10),
-              ),
-            ),
-            child: Column(
-              children: [
-                Row(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: CustomColors.leatherJacket,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.lens_blur_outlined,
-                        size: 60,
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+    return Material(
+      child: DocumentScanner(
+        controller: _controller,
+        generalStyles: const GeneralStyles(
+          baseColor: Colors.black,
+          hideDefaultDialogs: true,
+        ),
+        cropPhotoDocumentStyle: CropPhotoDocumentStyle(
+          top: MediaQuery.of(context).padding.top,
+        ),
+        onSave: (Uint8List imageBytes) {
+          // ? Bytes of the document/image already processed
+        },
       ),
     );
   }
