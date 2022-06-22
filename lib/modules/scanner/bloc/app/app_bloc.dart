@@ -134,6 +134,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(state.copyWith(
       statusCropPhoto: AppStatus.loading,
     ));
+
+    // emit(state.copyWith(
+    //   statusCropPhoto: AppStatus.success,
+    // ));
+    // emit(state.copyWith(
+    //   currentPage: AppPages.editDocument,
+    // ));
+    // Cropping logic needs to go here
+    // Uint8List? cropped_image = await state.pictureInitial?.readAsBytes();
+    // if (cropped_image != null) {
+    //   emit(state.copyWith(
+    //     statusCropPhoto: AppStatus.success,
+    //     pictureCropped: cropped_image,
+    //   ));
+    // emit(state.copyWith(
+    //   currentPage: AppPages.editDocument,
+    // ));
+    // } else {
+    //   emit(state.copyWith(
+    //     statusCropPhoto: AppStatus.failure,
+    //   ));
+    // }
   }
 
   ///

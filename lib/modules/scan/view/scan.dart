@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import '../../scanner/document_scanner_controller.dart';
@@ -30,7 +31,9 @@ class _ScanState extends State<Scan> {
         cropPhotoDocumentStyle: CropPhotoDocumentStyle(
           top: MediaQuery.of(context).padding.top,
         ),
+        resolutionCamera: ResolutionPreset.ultraHigh,
         onSave: (Uint8List imageBytes) {
+          print("HIIIII");
           // ? Bytes of the document/image already processed
         },
       ),
