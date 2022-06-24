@@ -40,7 +40,7 @@ class TakePhotoDocumentPage extends StatelessWidget {
   }
 }
 
-class _CameraPreview extends StatelessWidget {
+class _CameraPreview extends StatefulWidget {
   final TakePhotoDocumentStyle takePhotoDocumentStyle;
 
   const _CameraPreview({
@@ -48,6 +48,13 @@ class _CameraPreview extends StatelessWidget {
     required this.takePhotoDocumentStyle,
   }) : super(key: key);
 
+  @override
+  State<_CameraPreview> createState() => _CameraPreviewState();
+}
+
+class _CameraPreviewState extends State<_CameraPreview> {
+  bool isTorchOn = false;
+  double zoomLevel = 1.0;
   @override
   Widget build(BuildContext context) {
     return BlocSelector<AppBloc, AppState, CameraController?>(
@@ -61,19 +68,87 @@ class _CameraPreview extends StatelessWidget {
           );
         }
 
-        return Column(
-          // fit: StackFit.loose,
-          // alignment: Alignment.bottomCenter,
+        return Stack(
+          alignment: Alignment.topRight,
           children: [
-            // * Camera
-            CameraPreview(state),
+            Column(
+              children: [
+                // * Camera
+                CameraPreview(state),
 
-            // * children
-            if (takePhotoDocumentStyle.children != null)
-              ...takePhotoDocumentStyle.children!,
-            //
-            /// Default
-            const ButtonTakePhoto(),
+                // * children
+                if (widget.takePhotoDocumentStyle.children != null)
+                  ...widget.takePhotoDocumentStyle.children!,
+                //
+                /// Default
+                const ButtonTakePhoto(),
+              ],
+            ),
+            Positioned(
+              top: 40,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (state.value.flashMode == FlashMode.off) {
+                        state.setFlashMode(FlashMode.torch);
+                        setState(() {
+                          isTorchOn = true;
+                        });
+                      } else {
+                        state.setFlashMode(FlashMode.off);
+                        setState(() {
+                          isTorchOn = false;
+                        });
+                      }
+                    },
+                    icon: Icon(
+                      isTorchOn ? Icons.light_mode_outlined : Icons.light_mode,
+                      size: 21,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      print(zoomLevel);
+                      print(await state.getMaxZoomLevel());
+                      print(zoomLevel < await state.getMaxZoomLevel());
+                      zoomLevel = await state.getMinZoomLevel();
+                      if (zoomLevel < await state.getMaxZoomLevel()) {
+                        zoomLevel += 1.0;
+                        try {
+                          state.setZoomLevel(zoomLevel);
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      Icons.zoom_in,
+                      size: 21,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      print(zoomLevel);
+                      print(await state.getMinZoomLevel());
+                      if (zoomLevel > await state.getMinZoomLevel()) {
+                        zoomLevel -= 1.0;
+                        state.setZoomLevel(zoomLevel);
+                      }
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      Icons.zoom_out,
+                      size: 21,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       },
