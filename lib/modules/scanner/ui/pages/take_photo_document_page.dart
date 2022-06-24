@@ -110,9 +110,6 @@ class _CameraPreviewState extends State<_CameraPreview> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      print(zoomLevel);
-                      print(await state.getMaxZoomLevel());
-                      print(zoomLevel < await state.getMaxZoomLevel());
                       zoomLevel = await state.getMinZoomLevel();
                       if (zoomLevel < await state.getMaxZoomLevel()) {
                         zoomLevel += 1.0;
@@ -132,8 +129,6 @@ class _CameraPreviewState extends State<_CameraPreview> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      print(zoomLevel);
-                      print(await state.getMinZoomLevel());
                       if (zoomLevel > await state.getMinZoomLevel()) {
                         zoomLevel -= 1.0;
                         state.setZoomLevel(zoomLevel);
