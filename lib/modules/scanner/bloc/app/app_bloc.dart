@@ -214,5 +214,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       statusSavePhotoDocument:
           event.isSucces ? AppStatus.success : AppStatus.failure,
     ));
+    // Take back to camera page to take next image
+    emit(state.copyWith(
+      currentPage: AppPages.takePhoto,
+    ));
   }
 }

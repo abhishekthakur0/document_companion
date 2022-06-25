@@ -35,7 +35,6 @@ class _ScanState extends State<Scan> {
         resolutionCamera: ResolutionPreset.ultraHigh,
         onSave: (Uint8List imageBytes) {
           print("HIIIII");
-          // ? Bytes of the document/image already processed
         },
       ),
     );

@@ -22,117 +22,127 @@ class BottomBarEditPhoto extends StatelessWidget {
       bottom: 50,
       left: 10,
       right: 10,
-      child: Container(
-        height: 80,
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-        ),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            InkWell(
-              onTap: () =>
-                  context.read<DocumentScannerController>().applyFilter(
-                        FilterType.natural,
-                      ),
-              child: Container(
-                width: 100,
-                padding: EdgeInsets.all(15),
-                margin: EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  color: CustomColors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.nature_people_outlined,
-                      color: CustomColors.leatherJacket,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Natural',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: CustomColors.leatherJacket,
-                      ),
-                    )
-                  ],
-                ),
+      child: StreamBuilder(
+          stream: context.read<DocumentScannerController>().currentFilterType,
+          builder: (context, AsyncSnapshot<FilterType> snapshot) {
+            return Container(
+              height: 80,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
               ),
-            ),
-            InkWell(
-              onTap: () =>
-                  context.read<DocumentScannerController>().applyFilter(
-                        FilterType.gray,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  InkWell(
+                    onTap: () =>
+                        context.read<DocumentScannerController>().applyFilter(
+                              FilterType.natural,
+                            ),
+                    child: Container(
+                      width: 100,
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: snapshot.data?.index == 0
+                            ? CustomColors.leatherJacket
+                            : CustomColors.white,
+                        borderRadius: BorderRadius.circular(5),
                       ),
-              child: Container(
-                width: 100,
-                padding: EdgeInsets.all(15),
-                margin: EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  color: CustomColors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.nature_people_outlined,
-                      color: CustomColors.leatherJacket,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Gray',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: CustomColors.leatherJacket,
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.nature_people_outlined,
+                            color: CustomColors.leatherJacket,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Natural',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: CustomColors.leatherJacket,
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () =>
+                        context.read<DocumentScannerController>().applyFilter(
+                              FilterType.gray,
+                            ),
+                    child: Container(
+                      width: 100,
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: snapshot.data?.index == 1
+                            ? CustomColors.leatherJacket
+                            : CustomColors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.nature_people_outlined,
+                            color: CustomColors.leatherJacket,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Gray',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: CustomColors.leatherJacket,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () =>
+                        context.read<DocumentScannerController>().applyFilter(
+                              FilterType.eco,
+                            ),
+                    child: Container(
+                      width: 100,
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: snapshot.data?.index == 2
+                            ? CustomColors.leatherJacket
+                            : CustomColors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.nature_people_outlined,
+                            color: CustomColors.leatherJacket,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Eco',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: CustomColors.leatherJacket,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            InkWell(
-              onTap: () =>
-                  context.read<DocumentScannerController>().applyFilter(
-                        FilterType.eco,
-                      ),
-              child: Container(
-                width: 100,
-                padding: EdgeInsets.all(15),
-                margin: EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  color: CustomColors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.nature_people_outlined,
-                      color: CustomColors.leatherJacket,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Eco',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: CustomColors.leatherJacket,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 }
