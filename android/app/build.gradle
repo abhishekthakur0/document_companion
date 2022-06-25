@@ -69,4 +69,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.quickbirdstudios:opencv:4.5.1'
+    implementation 'com.android.support:support-annotations:28.0.0'
 }

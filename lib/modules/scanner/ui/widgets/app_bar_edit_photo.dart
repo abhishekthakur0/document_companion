@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../config/custom_colors.dart';
 import '../../bloc/app/app_state.dart';
 import '../../document_scanner_controller.dart';
 import '../../utils/edit_photo_document_style.dart';
@@ -22,33 +23,44 @@ class AppBarEditPhoto extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + 15,
-        ),
-        color: Colors.black.withOpacity(0.3),
+        margin: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              onPressed: () =>
-                  context.read<DocumentScannerController>().changePage(
-                        AppPages.cropPhoto,
-                      ),
-              icon: const Icon(
-                Icons.close,
+            CircleAvatar(
+              backgroundColor: CustomColors.black.withOpacity(0.4),
+              child: IconButton(
+                onPressed: () =>
+                    context.read<DocumentScannerController>().changePage(
+                          AppPages.cropPhoto,
+                        ),
+                icon: const Icon(
+                  Icons.close,
+                ),
+                color: Colors.white,
               ),
-              color: Colors.white,
             ),
 
             // * Crop photo
-            TextButton(
-              onPressed: () =>
-                  context.read<DocumentScannerController>().savePhotoDocument(),
-              child: Text(
-                editPhotoDocumentStyle.textButtonSave,
+            Container(
+              decoration: BoxDecoration(
+                color: CustomColors.black.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(10),
               ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
+              child: TextButton.icon(
+                onPressed: () => context
+                    .read<DocumentScannerController>()
+                    .savePhotoDocument(),
+                label: Text(
+                  editPhotoDocumentStyle.textButtonSave,
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                ),
+                icon: Icon(
+                  Icons.save,
+                ),
               ),
             ),
           ],

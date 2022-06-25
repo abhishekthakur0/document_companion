@@ -1,3 +1,4 @@
+import 'package:document_companion/config/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,33 +22,44 @@ class AppBarCropPhoto extends StatelessWidget {
       top: 0,
       left: 0,
       right: 0,
-      child: Padding(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top + 15,
-        ),
+      child: Container(
+        margin: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              onPressed: () =>
-                  context.read<DocumentScannerController>().changePage(
-                        AppPages.takePhoto,
-                      ),
-              icon: const Icon(
-                Icons.close,
+            CircleAvatar(
+              backgroundColor: CustomColors.black.withOpacity(0.4),
+              child: IconButton(
+                onPressed: () =>
+                    context.read<DocumentScannerController>().changePage(
+                          AppPages.takePhoto,
+                        ),
+                icon: const Icon(
+                  Icons.close,
+                ),
+                color: Colors.white,
               ),
-              color: Colors.white,
             ),
 
             // * Crop photo
-            TextButton(
-              onPressed: () =>
-                  context.read<DocumentScannerController>().cropPhoto(),
-              child: Text(
-                cropPhotoDocumentStyle.textButtonSave,
+            Container(
+              decoration: BoxDecoration(
+                color: CustomColors.black.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(10),
               ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
+              child: TextButton.icon(
+                onPressed: () =>
+                    context.read<DocumentScannerController>().cropPhoto(),
+                label: Text(
+                  cropPhotoDocumentStyle.textButtonSave,
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                ),
+                icon: Icon(
+                  Icons.crop,
+                ),
               ),
             ),
           ],

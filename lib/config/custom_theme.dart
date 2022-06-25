@@ -14,7 +14,7 @@ class CustomTheme with ChangeNotifier {
 
   static ThemeData get lightTheme {
     return ThemeData(
-      primaryColor: CustomColors.white,
+      primaryColor: CustomColors.leatherJacket,
       backgroundColor: CustomColors.leatherJacket,
       scaffoldBackgroundColor: CustomColors.leatherJacket,
       appBarTheme: AppBarTheme(

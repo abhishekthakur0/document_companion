@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../config/custom_colors.dart';
 import '../../bloc/app/app_bloc.dart';
 import '../../bloc/app/app_state.dart';
 import '../../utils/take_photo_document_style.dart';
@@ -85,61 +86,81 @@ class _CameraPreviewState extends State<_CameraPreview> {
               ],
             ),
             Positioned(
-              top: 40,
+              top: 50,
               child: Row(
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      if (state.value.flashMode == FlashMode.off) {
-                        state.setFlashMode(FlashMode.torch);
-                        setState(() {
-                          isTorchOn = true;
-                        });
-                      } else {
-                        state.setFlashMode(FlashMode.off);
-                        setState(() {
-                          isTorchOn = false;
-                        });
-                      }
-                    },
-                    icon: Icon(
-                      isTorchOn ? Icons.light_mode_outlined : Icons.light_mode,
-                      size: 21,
-                      color: Colors.white,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      zoomLevel = await state.getMinZoomLevel();
-                      if (zoomLevel < await state.getMaxZoomLevel()) {
-                        zoomLevel += 1.0;
-                        try {
-                          state.setZoomLevel(zoomLevel);
-                        } catch (e) {
-                          print(e);
+                  CircleAvatar(
+                    backgroundColor: CustomColors.black.withOpacity(0.4),
+                    child: IconButton(
+                      onPressed: () {
+                        if (state.value.flashMode == FlashMode.off) {
+                          state.setFlashMode(FlashMode.torch);
+                          setState(() {
+                            isTorchOn = true;
+                          });
+                        } else {
+                          state.setFlashMode(FlashMode.off);
+                          setState(() {
+                            isTorchOn = false;
+                          });
                         }
-                      }
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      Icons.zoom_in,
-                      size: 21,
-                      color: Colors.white,
+                      },
+                      icon: Icon(
+                        isTorchOn
+                            ? Icons.light_mode_outlined
+                            : Icons.light_mode,
+                        size: 21,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () async {
-                      if (zoomLevel > await state.getMinZoomLevel()) {
-                        zoomLevel -= 1.0;
-                        state.setZoomLevel(zoomLevel);
-                      }
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      Icons.zoom_out,
-                      size: 21,
-                      color: Colors.white,
+                  SizedBox(
+                    width: 10,
+                  ),
+                  CircleAvatar(
+                    backgroundColor: CustomColors.black.withOpacity(0.4),
+                    child: IconButton(
+                      onPressed: () async {
+                        zoomLevel = await state.getMinZoomLevel();
+                        if (zoomLevel < await state.getMaxZoomLevel()) {
+                          zoomLevel += 1.0;
+                          try {
+                            state.setZoomLevel(zoomLevel);
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        Icons.zoom_in,
+                        size: 21,
+                        color: Colors.white,
+                      ),
                     ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  CircleAvatar(
+                    backgroundColor: CustomColors.black.withOpacity(0.4),
+                    child: IconButton(
+                      onPressed: () async {
+                        if (zoomLevel > await state.getMinZoomLevel()) {
+                          zoomLevel -= 1.0;
+                          state.setZoomLevel(zoomLevel);
+                        }
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        Icons.zoom_out,
+                        size: 21,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                 ],
               ),

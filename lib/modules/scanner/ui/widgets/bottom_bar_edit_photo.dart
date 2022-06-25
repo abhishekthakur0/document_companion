@@ -1,3 +1,4 @@
+import 'package:document_companion/config/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,55 +19,115 @@ class BottomBarEditPhoto extends StatelessWidget {
     if (editPhotoDocumentStyle.hideBottomBarDefault) return Container();
 
     return Positioned(
-      bottom: MediaQuery.of(context).padding.bottom,
-      left: 0,
-      right: 0,
+      bottom: 50,
+      left: 10,
+      right: 10,
       child: Container(
+        height: 80,
+        padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
           children: [
-            // * Natural
-            TextButton(
-              onPressed: () =>
+            InkWell(
+              onTap: () =>
                   context.read<DocumentScannerController>().applyFilter(
                         FilterType.natural,
                       ),
-              child: const Text(
-                "Natural",
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
+              child: Container(
+                width: 100,
+                padding: EdgeInsets.all(15),
+                margin: EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: CustomColors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.nature_people_outlined,
+                      color: CustomColors.leatherJacket,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Natural',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: CustomColors.leatherJacket,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-
-            // * Gray
-            TextButton(
-              onPressed: () =>
+            InkWell(
+              onTap: () =>
                   context.read<DocumentScannerController>().applyFilter(
                         FilterType.gray,
                       ),
-              child: const Text(
-                "GRAY",
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
+              child: Container(
+                width: 100,
+                padding: EdgeInsets.all(15),
+                margin: EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: CustomColors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.nature_people_outlined,
+                      color: CustomColors.leatherJacket,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Gray',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: CustomColors.leatherJacket,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-
-            // * ECO
-            TextButton(
-              onPressed: () =>
+            InkWell(
+              onTap: () =>
                   context.read<DocumentScannerController>().applyFilter(
                         FilterType.eco,
                       ),
-              child: const Text(
-                "ECO",
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
+              child: Container(
+                width: 100,
+                padding: EdgeInsets.all(15),
+                margin: EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: CustomColors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.nature_people_outlined,
+                      color: CustomColors.leatherJacket,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Eco',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: CustomColors.leatherJacket,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],

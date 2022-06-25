@@ -10,7 +10,7 @@ import '../models/filter_type.dart';
 
 class ImageUtils {
   final _methodChannel = const MethodChannel(
-    "christian.com/flutter_document_scanner",
+    "dev.abhishekthakur/document_companion",
   );
 
   /// Calculates the rect of the image

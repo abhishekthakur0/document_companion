@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:document_companion/config/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../scanner/document_scanner_controller.dart';
@@ -25,7 +26,7 @@ class _ScanState extends State<Scan> {
       child: DocumentScanner(
         controller: _controller,
         generalStyles: const GeneralStyles(
-          baseColor: Colors.black,
+          baseColor: CustomColors.leatherJacket,
           hideDefaultDialogs: true,
         ),
         cropPhotoDocumentStyle: CropPhotoDocumentStyle(
