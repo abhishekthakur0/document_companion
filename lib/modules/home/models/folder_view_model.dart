@@ -1,5 +1,5 @@
-class TableModel {
-  TableModel({
+class FolderViewModel {
+  FolderViewModel({
     required this.id,
     required this.folder_name,
     required this.created_on,
@@ -9,5 +9,4 @@ class TableModel {
   String folder_name;
   String created_on;
   String modified_on;
-  toMap() {}
 }

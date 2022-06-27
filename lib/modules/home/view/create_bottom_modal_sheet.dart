@@ -2,6 +2,8 @@ import 'package:document_companion/config/custom_colors.dart';
 import 'package:document_companion/modules/scan/view/scan.dart';
 import 'package:flutter/material.dart';
 
+import 'create_folder_bottom_modal_sheet.dart';
+
 class CreateBottomModalSheet extends StatelessWidget {
   const CreateBottomModalSheet({Key? key}) : super(key: key);
 
@@ -24,6 +26,22 @@ class CreateBottomModalSheet extends StatelessWidget {
             runSpacing: 20,
             children: [
               InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(10),
+                      ),
+                    ),
+                    builder: (context) => Padding(
+                      padding: MediaQuery.of(context).viewInsets,
+                      child: CreateFolderBottomModalSheet(),
+                    ),
+                  );
+                },
                 child: Column(
                   children: [
                     Container(

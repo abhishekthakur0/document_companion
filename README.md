@@ -7,4 +7,5 @@
 #Features - 
 
 1 . PDF Editor and Creator
-2 . 
+2 . Folder Creation with TAG
+3 . Filter by TAG for Folders

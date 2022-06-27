@@ -165,6 +165,23 @@ class _CameraPreviewState extends State<_CameraPreview> {
                 ],
               ),
             ),
+            Positioned(
+              left: 20,
+              top: 50,
+              child: CircleAvatar(
+                backgroundColor: CustomColors.black.withOpacity(0.4),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    size: 21,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         );
       },

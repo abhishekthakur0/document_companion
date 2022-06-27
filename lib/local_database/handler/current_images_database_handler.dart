@@ -6,7 +6,7 @@ class CurrentImageDatabaseHandler {
   static const _tableName = 'CurrentImages';
   void insertImage(CurrentImage currentImage) async {
     final _database = await localDatabaseHandler.db;
-    _database.insert(
+    _database?.insert(
       _tableName,
       currentImage.toMap(),
     );

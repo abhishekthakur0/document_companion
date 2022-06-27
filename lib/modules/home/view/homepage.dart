@@ -1,4 +1,6 @@
 import 'package:document_companion/config/custom_colors.dart';
+import 'package:document_companion/modules/home/bloc/folder_bloc.dart';
+import 'package:document_companion/modules/home/models/folder_view_model.dart';
 import 'package:document_companion/modules/home/view/create_bottom_modal_sheet.dart';
 import 'package:document_companion/utils/constants/constants.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,12 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  @override
+  void initState() {
+    folderBloc.fetchFolders();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,19 +126,57 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                   Expanded(
-                    child: Wrap(
-                      children: [
-                        Icon(
-                          Icons.folder,
-                          size: 200,
-                        ),
-                        Icon(
-                          Icons.folder,
-                          size: 200,
-                        ),
-                      ],
+                    child: StreamBuilder<List<FolderViewModel>>(
+                      stream: folderBloc.folderList,
+                      builder: (context,
+                          AsyncSnapshot<List<FolderViewModel>> snapshot) {
+                        if (snapshot.hasData) {
+                          final folders = snapshot.data;
+                          if (folders?.isEmpty ?? true) {
+                            return const Center(
+                              child: Text('No folders yet'),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Wrap(
+                              children: List.generate(
+                                folders?.length ?? 0,
+                                (index) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.folder,
+                                      size: 180,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      child: Text(
+                                        folders?.elementAt(index).folder_name ??
+                                            '',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
                 ],
               ),
             ),
