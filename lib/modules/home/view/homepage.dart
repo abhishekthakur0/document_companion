@@ -5,6 +5,8 @@ import 'package:document_companion/modules/home/view/create_bottom_modal_sheet.d
 import 'package:document_companion/utils/constants/constants.dart';
 import 'package:flutter/material.dart';
 
+import 'folder_page.dart';
+
 class Homepage extends StatefulWidget {
   static const String route = '/homepage';
   @override
@@ -142,27 +144,18 @@ class _HomepageState extends State<Homepage> {
                             child: Wrap(
                               children: List.generate(
                                 folders?.length ?? 0,
-                                (index) => Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Icons.folder,
-                                      size: 180,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0),
-                                      child: Text(
-                                        folders?.elementAt(index).folder_name ??
-                                            '',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
-                                    )
-                                  ],
+                                (index) => InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      FolderPage.route,
+                                      arguments: folders![index],
+                                    );
+                                  },
+                                  child: FolderView(
+                                    folder_name:
+                                        folders?.elementAt(index).folder_name,
+                                  ),
                                 ),
                               ),
                             ),
@@ -183,6 +176,40 @@ class _HomepageState extends State<Homepage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FolderView extends StatelessWidget {
+  const FolderView({
+    Key? key,
+    required this.folder_name,
+  }) : super(key: key);
+
+  final String? folder_name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.folder,
+          size: 180,
+          color: CustomColors.leatherJacket,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            folder_name ?? '',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

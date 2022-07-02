@@ -1,6 +1,8 @@
 import 'package:document_companion/modules/home/view/homepage.dart';
 import 'package:flutter/material.dart';
 
+import '../modules/home/models/folder_view_model.dart';
+import '../modules/home/view/folder_page.dart';
 import '../modules/scan/view/scan.dart';
 
 class RouteGenerator {
@@ -16,7 +18,13 @@ class RouteGenerator {
           builder: (_) => Scan(),
           settings: settings,
         );
-
+      case FolderPage.route:
+        return MaterialPageRoute(
+          builder: (_) => FolderPage(
+            folder: settings.arguments as FolderViewModel,
+          ),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => const SizedBox(),

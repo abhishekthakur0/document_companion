@@ -27,14 +27,53 @@ class ButtonTakePhoto extends StatelessWidget {
           top: Radius.circular(10),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          // Image.memory(
-          //   Unit8,
-          //   height: 50,
-          //   width: 50,
-          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    height: 100,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: CustomColors.black,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: CustomColors.white,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: CircleAvatar(
+                      radius: 10,
+                      backgroundColor: CustomColors.white,
+                      child: Text(
+                        1.toString(),
+                        style: TextStyle(
+                          color: CustomColors.black,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.next_week_outlined,
+                  size: 30,
+                  color: CustomColors.leatherJacket,
+                ),
+              ),
+            ],
+          ),
           InkWell(
             onTap: () => context.read<DocumentScannerController>().takePhoto(),
             child: Container(
@@ -49,7 +88,7 @@ class ButtonTakePhoto extends StatelessWidget {
                 size: 60,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

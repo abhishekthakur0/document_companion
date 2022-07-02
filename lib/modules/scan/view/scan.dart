@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:document_companion/config/custom_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../../home/bloc/current_image_bloc.dart';
 import '../../scanner/document_scanner_controller.dart';
 import '../../scanner/ui/pages/document_scanner.dart';
 import '../../scanner/utils/crop_photo_document_style.dart';
@@ -34,7 +35,7 @@ class _ScanState extends State<Scan> {
         ),
         resolutionCamera: ResolutionPreset.ultraHigh,
         onSave: (Uint8List imageBytes) {
-          print("HIIIII");
+          currentImageBloc.saveCurrentImage(imageBytes);
         },
       ),
     );

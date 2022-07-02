@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class CurrentImage {
   CurrentImage({
     required this.id,
@@ -7,9 +9,17 @@ class CurrentImage {
     required this.low_res_image,
   });
   String id;
-  String image;
+  Uint8List image;
   String timestamp;
   bool is_shoot_through_fast_camera;
   String low_res_image;
-  toMap() {}
+  toMap() {
+    return {
+      'id': id,
+      'image': Util(),
+      'timestamp': timestamp,
+      'is_shoot_through_fast_camera': is_shoot_through_fast_camera,
+      'low_res_image': low_res_image,
+    };
+  }
 }
