@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:document_companion/modules/home/bloc/current_image_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -172,6 +173,7 @@ class _CameraPreviewState extends State<_CameraPreview> {
                 backgroundColor: CustomColors.black.withOpacity(0.4),
                 child: IconButton(
                   onPressed: () {
+                    currentImageBloc.deleteCurrentImages();
                     Navigator.pop(context);
                   },
                   icon: Icon(

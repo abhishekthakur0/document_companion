@@ -34,8 +34,9 @@ class _ScanState extends State<Scan> {
           top: MediaQuery.of(context).padding.top,
         ),
         resolutionCamera: ResolutionPreset.ultraHigh,
-        onSave: (Uint8List imageBytes) {
-          currentImageBloc.saveCurrentImage(imageBytes);
+        onSave: (Uint8List imageBytes) async {
+          await currentImageBloc.saveCurrentImage(imageBytes);
+          await currentImageBloc.getCurrentImage();
         },
       ),
     );

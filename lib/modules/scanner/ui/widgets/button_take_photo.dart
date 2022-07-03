@@ -1,7 +1,12 @@
+import 'dart:typed_data';
+
+import 'package:document_companion/local_database/models/current_image.dart';
+import 'package:document_companion/modules/home/bloc/current_image_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/custom_colors.dart';
+import '../../../home/view/images_preview.dart';
 import '../../document_scanner_controller.dart';
 
 class ButtonTakePhoto extends StatelessWidget {
@@ -33,39 +38,59 @@ class ButtonTakePhoto extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Container(
-                    height: 100,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: CustomColors.black,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: CustomColors.white,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 5,
-                    right: 5,
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: CustomColors.white,
-                      child: Text(
-                        1.toString(),
-                        style: TextStyle(
-                          color: CustomColors.black,
-                          fontSize: 10,
+              StreamBuilder<List<CurrentImage>>(
+                  stream: currentImageBloc.currentImageStream,
+                  builder:
+                      (context, AsyncSnapshot<List<CurrentImage>> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container();
+                    }
+                    return Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: CustomColors.black,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: CustomColors.white,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.memory(
+                              snapshot.data?.last.image ?? Uint8List(0),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: CustomColors.white,
+                            child: Text(
+                              (snapshot.data?.length ?? 0).toString(),
+                              style: TextStyle(
+                                color: CustomColors.black,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  }),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    ImagesPreview.route,
+                  );
+                },
                 icon: Icon(
                   Icons.next_week_outlined,
                   size: 30,

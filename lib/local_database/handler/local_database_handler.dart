@@ -28,7 +28,7 @@ class LocalDatabaseHandler {
     // When creating the db, create the table
     // Create [CurrentImage] table
     await db.execute(
-        "CREATE TABLE CurrentImages(id TEXT PRIMARY KEY, image TEXT, timestamp TEXT, is_shoot_through_fast_camera BOOLEAN, low_res_image TEXT )");
+        "CREATE TABLE CurrentImages(id TEXT PRIMARY KEY, image BLOB, timestamp TEXT, is_shoot_through_fast_camera TEXT, low_res_image BLOB )");
     // Create [Folders] table
     await db.execute(
         "CREATE TABLE Folders(id TEXT PRIMARY KEY, folder_name TEXT, created_on TEXT, modified_on TEXT )");

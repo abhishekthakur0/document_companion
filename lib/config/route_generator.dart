@@ -1,4 +1,5 @@
 import 'package:document_companion/modules/home/view/homepage.dart';
+import 'package:document_companion/modules/home/view/images_preview.dart';
 import 'package:flutter/material.dart';
 
 import '../modules/home/models/folder_view_model.dart';
@@ -23,6 +24,11 @@ class RouteGenerator {
           builder: (_) => FolderPage(
             folder: settings.arguments as FolderViewModel,
           ),
+          settings: settings,
+        );
+      case ImagesPreview.route:
+        return MaterialPageRoute(
+          builder: (_) => ImagesPreview(),
           settings: settings,
         );
       default:

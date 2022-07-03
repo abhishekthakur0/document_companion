@@ -12,13 +12,13 @@ class CurrentImage {
   Uint8List image;
   String timestamp;
   bool is_shoot_through_fast_camera;
-  String low_res_image;
+  Uint8List low_res_image;
   toMap() {
     return {
       'id': id,
-      'image': Util(),
+      'image': image,
       'timestamp': timestamp,
-      'is_shoot_through_fast_camera': is_shoot_through_fast_camera,
+      'is_shoot_through_fast_camera': is_shoot_through_fast_camera.toString(),
       'low_res_image': low_res_image,
     };
   }
