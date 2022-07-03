@@ -5,6 +5,7 @@ import 'package:document_companion/modules/home/bloc/current_image_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/custom_colors.dart';
+import '../bloc/save_image_bloc.dart';
 
 class ImagesPreview extends StatefulWidget {
   static const route = '/images_preview';
@@ -85,10 +86,26 @@ class _ImagesPreviewState extends State<ImagesPreview> {
                   children: [
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       icon: Icon(
                         Icons.close,
                         color: CustomColors.white,
+                      ),
+                    ),
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        primary: CustomColors.white,
+                      ),
+                      onPressed: () {
+                        saveImageBloc.openSaveImageSheet();
+                      },
+                      label: Text(
+                        'Save',
+                      ),
+                      icon: Icon(
+                        Icons.save,
                       ),
                     ),
                     TextButton.icon(

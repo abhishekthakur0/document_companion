@@ -30,6 +30,7 @@ class TakePhotoDocumentPage extends StatelessWidget {
             return takePhotoDocumentStyle.onLoading;
 
           case AppStatus.success:
+            currentImageBloc.getCurrentImage();
             return _CameraPreview(
               takePhotoDocumentStyle: takePhotoDocumentStyle,
             );

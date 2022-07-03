@@ -9,7 +9,7 @@ import '../models/folder_view_model.dart';
 class FolderBloc {
   final uuid = Uuid();
   StreamController<List<FolderViewModel>> folderListController =
-      StreamController();
+      StreamController<List<FolderViewModel>>.broadcast();
   Stream<List<FolderViewModel>> get folderList => folderListController.stream;
 
   Future<void> createFolder(String folderName) async {
